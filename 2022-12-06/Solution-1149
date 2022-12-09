@@ -27,3 +27,4 @@ public class Main {
 		System.out.println(Arrays.stream(dp[size - 1]).min().getAsInt());
 	}
 }
+
