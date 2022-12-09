@@ -1,0 +1,36 @@
+package study2022_12_09;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Solution1024 {
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer stringTokenizer = new StringTokenizer(bf.readLine());
+		int num = Integer.parseInt(stringTokenizer.nextToken());
+		int count = Integer.parseInt(stringTokenizer.nextToken());
+		int k = 0;
+		// count = 2 일 경우 n + (n+1) -> k = 1, count * n + k 로 나타낼 수 있음
+		// count = 3 일 경우 n + (n+1) + (n+2) -> k = 3
+		// count = 4 일 경우 n + (n+1) + (n+2) + (n+3) -> k = 6
+		// 18 2 -> 2n + 1 = 18 2n = (18 - 1) / cnt
+		// 18 3 -> 3n + 3 = 18 3n = (18 - 3) % cnt =0 -> 5 6 7
+		for(int i=1; i<count; i++) {
+			k += i;
+		}
+		// L이 100보다 작거나 같기때문에 while 문 100까지
+		while(count <= 100) {
+			if(num >= k && (num - k) % count == 0) {
+				for(int i=0; i<count; i++) {
+					System.out.print((num-k)/count + i + " ");
+				}
+				break;
+			}
+			k += count;
+			count++;
+		}
+		if(count > 100) System.out.print("-1");
+	}
+}
