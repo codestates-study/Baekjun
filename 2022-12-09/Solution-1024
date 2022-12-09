@@ -25,4 +25,4 @@ public class Main {
 		}
 		if(count > 100) System.out.print("-1");
 	}
-}
+} 
