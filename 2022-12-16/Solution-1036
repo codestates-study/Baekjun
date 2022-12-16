@@ -167,4 +167,4 @@ public class Base36 {
 		if(sb.length()==0) sb.append(0);
 		System.out.println(sb);
 	}
-}
+} 
