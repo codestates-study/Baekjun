@@ -1,0 +1,170 @@
+package baekjun;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Base36 {
+	public static TreeMap<Character, int[]> treeMap = new TreeMap<>();
+	public static TreeMap<Character, String> sortTreeMap = new TreeMap<>();
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+
+		int caseNum = Integer.parseInt(bf.readLine());
+		ArrayList<String> al = new ArrayList<>();
+		int max = 0;
+		for(int i=0; i<caseNum; i++) {
+			al.add(bf.readLine());
+			if(max < al.get(i).length()) max = al.get(i).length();
+		}
+		int[] arr = new int[max+2];
+		int maxCopy = max;
+
+		int changeZ = Integer.parseInt(bf.readLine());
+		ArrayList<Character> al2 = new ArrayList<>();
+		for(int i=0; i<10; i++) {
+			al2.add((char) ('0'+i));
+		}
+		for(int i=0; i<26; i++) {
+			al2.add((char)('A'+i));
+		}
+		String currentString;
+		StringBuilder sb;
+		for(String s : al) {
+			for(int i = 0; i<s.length(); i++) {
+				if(s.charAt(i) == 'Z') continue;
+				// GOOD -> O 0 -> map key => O, 해당 자리수 위치의 값에 Z-O 뺀값을 더해줬습니다.
+				// GOOD ->
+				// [0 0 0 0 0 0] -> O -> i =1 -> charArr[4] += Z-O;
+				// [0 0 0 10 0 0] -> O -> i =2 -> charArr[5] += Z-O;
+				// [0 0 0 10 10 0] -> i=1 -> charArr[4] += Z-O -> [1 0 0 0 10 0]
+				int[] charArr = new int[maxCopy+2];
+				int idx = charArr.length - s.length() + i;
+				if(treeMap.containsKey(s.charAt(i))) charArr = treeMap.get(s.charAt(i));
+				charArr[idx] += 35 - al2.indexOf(s.charAt(i));
+
+				int j = 0;
+				while(charArr[idx-j] > 35) {
+					charArr[idx-j] -= 36;
+					charArr[idx-1-j] += 1;
+					j++;
+				}
+
+				treeMap.put(s.charAt(i), charArr);
+			}
+		}
+
+		List<Character> keySet = new ArrayList<>(treeMap.keySet());
+		keySet.sort((o1, o2) -> {
+			int[] s1 = treeMap.get(o1);
+			int[] s2 = treeMap.get(o2);
+			for(int i=0; i<s1.length; i++) {
+				if (s1[i] > s2[i]) {
+					return -1;
+				} else if (s1[i] < s2[i]) {
+					return 1;
+				}
+			}
+			return 0;
+		});
+
+
+//		for(Map.Entry<Character, int[]> entry : treeMap.entrySet()) {
+//			int[] arr2 = entry.getValue();
+//			sb = new StringBuilder();
+//			boolean changeNum = false;
+//			for(int i=0; i<arr2.length; i++) {
+//				if(!changeNum && arr2[i] == 0) continue;
+//				else {
+//					changeNum = true;
+//					sb.append(al2.get(arr2[i]));
+//				}
+//			}
+//			sortTreeMap.put(entry.getKey(), sb.toString());
+//		}
+//
+//		List<Character> keySet = new ArrayList<>(sortTreeMap.keySet());
+//		keySet.sort((o1, o2) -> {
+//			String s1 = sortTreeMap.get(o1);
+//			String s2 = sortTreeMap.get(o2);
+//			if(s1.length() > s2.length()) {
+//				return -1;
+//			} else if(s1.length() < s2.length()) {
+//				return 1;
+//			} else {
+//				if(s1.compareTo(s2)<0) {
+//					return 1;
+//				} else if(s1.compareTo(s2) == 0) return 0;
+//				else return -1;
+//			}
+//		});
+
+		int arrLength = arr.length;
+		for(int i=0; i<maxCopy; i++) {
+			int sum = 0;
+			for(int j=0; j<al.size(); j++) {
+				currentString = al.get(j);
+				int k = currentString.length() - i - 1;
+				if(k >= 0) {
+					sum += al2.indexOf(currentString.charAt(k));
+				}
+			}
+			int j = i;
+			while(sum > 0) {
+				if(arr[arrLength-j-1] == 0) arr[arrLength-j-1] = sum % 36;
+				else {
+					int sum2 = arr[arrLength-j-1] + sum % 36;
+					int k = j;
+					if(sum2 > 35){
+						arr[arrLength-k-1] = sum2%36;
+						arr[arrLength-k-2] += sum2/36;
+					} else arr[arrLength-j-1] = sum2;
+				}
+				sum /= 36;
+				j++;
+			}
+		}
+
+		for(int i=0; i<maxCopy+2; i++) {
+			int sum = 0;
+			for(int j=0; j<changeZ; j++) {
+				if(j >= keySet.size()) break;
+//				currentString = sortTreeMap.get(keySet.get(j));
+				int[] arr2 = treeMap.get(keySet.get(j));
+//				int k = currentString.length() - i - 1;
+				if(/*k*/ arr2[arr2.length-1-i] > 0) {
+					sum += arr2[arr2.length-1-i];
+//					sum += al2.indexOf(currentString.charAt(k));
+				}
+			}
+			int j = i;
+			while(sum > 0) {
+				if(arr[arrLength-j-1] == 0) arr[arrLength-j-1] = sum % 36;
+				else {
+					int sum2 = arr[arrLength-j-1] + sum % 36;
+					int k = j;
+					if(sum2 > 35){
+						arr[arrLength-k-1] = sum2%36;
+						arr[arrLength-k-2] += sum2/36;
+					} else arr[arrLength-j-1] = sum2;
+				}
+				sum /= 36;
+				j++;
+			}
+		}
+
+
+		sb = new StringBuilder();
+		boolean changeNum = false;
+		for(int i=0; i<arr.length; i++) {
+			if(!changeNum && arr[i] == 0) continue;
+			else {
+				changeNum = true;
+				sb.append(al2.get(arr[i]));
+			}
+		}
+		if(sb.length()==0) sb.append(0);
+		System.out.println(sb);
+	}
+}
