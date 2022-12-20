@@ -1,0 +1,47 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        int k = Integer.parseInt(br.readLine());
+
+        int[] EWSN = new int[6];
+
+        for (int i = 0; i < 6; ++i) {
+            st = new StringTokenizer(br.readLine(), " ");
+            st.nextToken();
+            EWSN[i] = Integer.parseInt(st.nextToken());
+        }
+
+        int max = EWSN[0];
+        int maxIdx = 0;
+        for (int i = 1; i < 6; ++i) {
+            if (max < EWSN[i]) {
+                max = EWSN[i];
+                maxIdx = i;
+            }
+        }
+
+        int idx = (maxIdx == 0 ? 5 : maxIdx - 1);
+        int nextMax = EWSN[idx];
+        int min, nextMin;
+        if (EWSN[idx] < EWSN[(maxIdx + 1) % 6]) {
+            idx = (maxIdx + 1) % 6;
+            nextMax = EWSN[idx];
+            min = max - EWSN[(idx + 1) % 6];
+            nextMin = nextMax - EWSN[(maxIdx - 1) < 0 ? 5 : maxIdx - 1];
+        }
+        else {
+            min = nextMax - EWSN[(maxIdx + 1) % 6];
+            nextMin = max - EWSN[(idx - 1) < 0 ? 5 : idx - 1];
+        }
+
+        int area = (max * nextMax) - (min * nextMin);
+        System.out.println(area * k);
+    }
+}
