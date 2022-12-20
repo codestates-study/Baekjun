@@ -1,0 +1,121 @@
+import java.io.IOException;
+import java.util.Scanner;
+
+
+public class Main {
+    static int N, M;
+    //0,1,2,3,4
+    //x,y,direction,num,check
+    static int[] tools = new int[5];
+    static String[][] graph;
+
+    public static void main(String[] args) throws IOException {
+        //기존의 그래프문제와 같지만 거기서 방향에 따른 순서만 추가되었다
+        //   0
+        // 3   1
+        //   2
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        M = sc.nextInt();
+        tools[0] = sc.nextInt();
+        tools[1] = sc.nextInt();
+        tools[2] = sc.nextInt();
+        graph = new String[N][M];
+        sc.nextLine();
+        for (int i = 0; i < N; i++) {
+            graph[i] = sc.nextLine().split(" ");
+        }
+
+        tools[3] = 1;
+        tools[4] = 0;
+        graph[tools[0]][tools[1]]="2";
+        move(graph);
+        System.out.println(tools[3]);
+    }
+    public static void move(String[][] graph) {
+        for (int i = 0; i < 4; i++) {
+            tools[2] = turnLeft(tools[2]);
+            go(graph);
+            if (tools[4] == 1) break;
+        }
+        if (tools[4] == 0) {
+            tools[2] = (tools[2] + 2) % 4;
+            goBack(graph);
+            tools[2] = (tools[2] + 2) % 4;
+        }
+        if (tools[4] == 0) return;
+        else {
+            tools[4] = 0;
+            move(graph);
+        }
+    }
+    public static int turnLeft(int direction) {
+        return (direction + 3) % 4;
+    }
+
+    public static void go(String[][] graph) {
+        switch (tools[2]) {
+            case 0:
+                if (graph[tools[0] - 1][tools[1]].equals("0")) {
+                    graph[tools[0] - 1][tools[1]] = "2";
+                    tools[3]++;
+                    tools[4] = 1;
+                    tools[0]--;
+                }
+                break;
+            case 1:
+                if (graph[tools[0]][tools[1] + 1].equals("0")) {
+                    graph[tools[0]][tools[1] + 1] = "2";
+                    tools[3]++;
+                    tools[4] = 1;
+                    tools[1]++;
+                }
+                break;
+            case 2:
+                if (graph[tools[0] + 1][tools[1]].equals("0")) {
+                    graph[tools[0] + 1][tools[1]] = "2";
+                    tools[3]++;
+                    tools[4] = 1;
+                    tools[0]++;
+                }
+                break;
+            case 3:
+                if (graph[tools[0]][tools[1] - 1].equals("0")) {
+                    graph[tools[0]][tools[1] - 1] = "2";
+                    tools[3]++;
+                    tools[4] = 1;
+                    tools[1]--;
+                }
+                break;
+        }
+    }
+
+    public static void goBack(String[][] graph) {
+        switch (tools[2]) {
+            case 0:
+                if (!graph[tools[0] - 1][tools[1]].equals("1")) {
+                    tools[4] = 1;
+                    tools[0]--;
+                }
+                break;
+            case 1:
+                if (!graph[tools[0]][tools[1] + 1].equals("1")) {
+                    tools[4] = 1;
+                    tools[1]++;
+                }
+                break;
+            case 2:
+                if (!graph[tools[0] + 1][tools[1]].equals("1")) {
+                    tools[4] = 1;
+                    tools[0]++;
+                }
+                break;
+            case 3:
+                if (!graph[tools[0]][tools[1] - 1].equals("1")) {
+                    tools[4] = 1;
+                    tools[1]--;
+                }
+                break;
+        }
+    }
+}
