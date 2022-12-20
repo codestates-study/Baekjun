@@ -1,0 +1,32 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        StringBuffer answer = new StringBuffer();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken()); //듣도 못한 사람 수
+        int m = Integer.parseInt(st.nextToken()); //보도 못한 사람 수
+        int t = n+m;
+        int count = 0;
+
+        List<String> list = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < t; i++) {
+            String person = br.readLine();
+            if(map.containsKey(person)) list.add(person);
+            else map.put(person, 1);
+        }
+
+        Collections.sort(list);
+        answer.append(list.size()).append("\n");
+        for (String person : list) {
+            answer.append(person).append("\n");
+        }
+        System.out.print(answer);
+    }
+}
