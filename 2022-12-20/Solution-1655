@@ -1,0 +1,43 @@
+package baekjun;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.PriorityQueue;
+
+public class TalkMiddle {
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int caseNum = Integer.parseInt(bf.readLine());
+
+		PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+		PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i<caseNum; i++) {
+			int num = Integer.parseInt(bf.readLine());
+
+			if(minHeap.size() == maxHeap.size()) {
+				maxHeap.offer(num);
+			} else {
+				minHeap.offer(num);
+			}
+			if(!maxHeap.isEmpty() && !minHeap.isEmpty()) {
+				// max -> 큰값(내림차순으로 정렬되는 큐) min -> 작은값(오름차순으로 정렬되는 큐)
+				// max.peek = 작은 값들중 가장큰값,  min.peek = 큰 값들중 가장 작은값.
+				// max 5 2 1 -99   min 5 7 10
+				// 9, 1, -2, 3, -4, 5, -6, 7, -8, 9
+				// max 1 -2 -4 -6  -8   min 3 5 7 9 9
+				if(maxHeap.peek() > minHeap.peek()) {
+					int temp = minHeap.poll();
+					minHeap.offer(maxHeap.poll());
+					maxHeap.offer(temp);
+				}
+			}
+			sb.append(maxHeap.peek()).append("\n");
+		}
+
+		System.out.println(sb);
+	}
+}
