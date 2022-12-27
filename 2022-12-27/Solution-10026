@@ -1,0 +1,75 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+	static char[][] graph;
+	static boolean[][] visited;
+	static int n;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(br.readLine());
+		graph = new char[n][n];
+		for (int i = 0; i < n; i++) {
+			String readline = br.readLine();
+			for (int j = 0; j < n; j++) graph[i][j] = readline.charAt(j);
+		}
+
+		// 적록색약이 아닌 사람이 본 경우
+		visited = new boolean[n][n];
+		int normal = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (!visited[i][j]) {
+					bfs(i, j);
+					normal++;
+				}
+			}
+		}
+
+		// 적록색약 graph: R -> G 로 치환
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (graph[i][j] == 'R') graph[i][j] = 'G';
+			}
+		}
+
+		// 적록색약인 사람이 본 경우
+		visited = new boolean[n][n];
+		int weakness = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (!visited[i][j]) {
+					bfs(i, j);
+					weakness++;
+				}
+			}
+		}
+		
+		System.out.println(normal + " " + weakness);
+	}
+
+	private static void bfs(int row, int col) {
+		List<int[]> queue = new ArrayList<>();
+		int[] dx = {-1, 1, 0, 0};
+		int[] dy = {0, 0, -1, 1};
+
+		queue.add(new int[]{row, col});
+		char target = graph[row][col];
+		while (queue.size() > 0) {
+			int[] vertex = queue.remove(0);
+			int y = vertex[0];
+			int x = vertex[1];
+			for (int i = 0; i < 4; i++) {
+				int nx = x + dx[i];
+				int ny = y + dy[i];
+				if (nx >= 0 && nx < n && ny >= 0 && ny < n && !visited[ny][nx] && graph[ny][nx] == target) {
+					visited[ny][nx] = true;
+					queue.add(new int[]{ny, nx});
+				}
+			}
+		}
+	}
+}
