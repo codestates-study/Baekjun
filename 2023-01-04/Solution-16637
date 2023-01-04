@@ -17,7 +17,7 @@ public class Main {
 			if (i % 2 == 0) nums.add(Character.getNumericValue(input.charAt(i)));
 			else operator.add(input.charAt(i));
 		}
-
+		
 		find(0, nums.get(0));
 		System.out.println(result);
 	}
