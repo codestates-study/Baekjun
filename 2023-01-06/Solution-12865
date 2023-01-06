@@ -1,0 +1,61 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class NormalBackpack {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String[] input = br.readLine().split(" ");
+		int n = Integer.parseInt(input[0]);
+		int k = Integer.parseInt(input[1]);
+		int[] weight = new int[n];
+		int[] worth = new int[n];
+		int[] dpWeight = new int[n];
+		int[] dpWorth = new int[n];
+
+		for (int i = 0; i < n; i++) {
+			input = br.readLine().split(" ");
+			weight[i] = Integer.parseInt(input[0]);
+			dpWeight[i] = weight[i];
+			worth[i] = Integer.parseInt(input[1]);
+			dpWorth[i] = worth[i];
+		}
+
+		for (int i = 1; i < n; i++) {
+			for (int j = 0; j < i; j++) {
+				if (dpWeight[i] + weight[j] <= k) {
+					dpWorth[i] += worth[j];
+					dpWeight[i] += weight[j];
+				}
+			}
+		}
+		System.out.println(Arrays.stream(dpWorth).max().getAsInt());
+	}
+}
+/*
+weight = [6, 4, 3, 5]
+worth = [13, 8, 6, 12]
+
+
+dpWeight = [6, 4, 7, 5]
+dpWorth = [13, 8, 14, 12]
+ */
+
+
+/*
+
+6 304
+
+98 98
+4 4
+6 6
+100 100
+101 101
+103 103
+
+
+-> 304
+
+
+ */
